@@ -211,6 +211,24 @@ def test_hold_when_pool_unavailable(strategy):
     assert intent.intent_type.value == "HOLD"
 
 
+def test_pool_address_falls_back_to_pair_lookup_when_pool_price_missing(strategy_config):
+    strategy_config["pool_address"] = "0xc6962004f452be9203591991d15f6b388e09e8d0"
+    strategy = ArbTASwapRSIStrategy(
+        config=strategy_config,
+        chain="arbitrum",
+        wallet_address="0x" + "1" * 40,
+    )
+    market = _market(datetime(2026, 1, 1, tzinfo=UTC))
+    delattr(market, "pool_price")
+
+    strategy.prev_rsi = Decimal("54")
+    strategy.last_processed_candle_ts = (market.timestamp - timedelta(minutes=5)).isoformat()
+    market._rsi = Decimal("56")
+
+    intent = strategy.decide(market)
+    assert intent.intent_type.value == "SWAP"
+
+
 def test_hold_when_quote_slippage_above_limit(strategy):
     market = _market(datetime(2026, 1, 1, tzinfo=UTC))
     strategy.prev_rsi = Decimal("54")

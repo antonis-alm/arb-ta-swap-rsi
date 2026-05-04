@@ -309,15 +309,17 @@ class ArbTASwapRSIStrategy(IntentStrategy):
 
     def _pool_has_liquidity(self, market: MarketSnapshot) -> bool:
         try:
-            if self.pool_address:
+            if self.pool_address and hasattr(market, "pool_price"):
                 market.pool_price(self.pool_address, chain=self.execution_chain)
-                reserves = market.pool_reserves(self.pool_address, chain=self.execution_chain)
-                liquidity = Decimal(str(getattr(reserves, "liquidity", "0") or "0"))
-                if liquidity < self.min_pool_liquidity:
-                    self.last_decision_reason = (
-                        f"pool liquidity {liquidity} below {self.min_pool_liquidity}"
-                    )
-                    return False
+
+                if hasattr(market, "pool_reserves"):
+                    reserves = market.pool_reserves(self.pool_address, chain=self.execution_chain)
+                    liquidity = Decimal(str(getattr(reserves, "liquidity", "0") or "0"))
+                    if liquidity < self.min_pool_liquidity:
+                        self.last_decision_reason = (
+                            f"pool liquidity {liquidity} below {self.min_pool_liquidity}"
+                        )
+                        return False
             else:
                 market.pool_price_by_pair(
                     token_a=self.base_token,
@@ -326,7 +328,7 @@ class ArbTASwapRSIStrategy(IntentStrategy):
                     protocol=self.protocol,
                     fee_tier=self.pool_fee_tier_bps,
                 )
-        except (PoolPriceUnavailableError, ValueError) as exc:
+        except (AttributeError, PoolPriceUnavailableError, ValueError) as exc:
             self.last_decision_reason = f"pool unavailable: {exc}"
             return False
         return True
