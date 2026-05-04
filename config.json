@@ -1,0 +1,68 @@
+{
+  "chain": "arbitrum",
+  "strategy_name": "Arb-TA-Swap-RSI",
+  "protocol": "uniswap_v3",
+  "base_token": "WETH",
+  "quote_token": "USDC",
+  "pool_fee_tier_bps": 500,
+  "pool_address": "0xc6962004f452be9203591991d15f6b388e09e8d0",
+  "rsi_period": 14,
+  "rsi_timeframe": "5m",
+  "rsi_lower_band": 45,
+  "rsi_upper_band": 55,
+  "allocation_pct": 0.95,
+  "max_slippage": "0.003",
+  "max_price_impact": "0.003",
+  "max_quote_slippage_bps": 30,
+  "max_quote_impact_bps": 30,
+  "min_expected_out": "0",
+  "min_trade_value_usd": "1",
+  "max_gas_ratio": "0.05",
+  "min_pool_liquidity": "1",
+  "quote_timeout_seconds": 1.5,
+  "cooldown_candles": 1,
+  "force_action": "",
+  "halt_on_repeated_failures": true,
+  "max_consecutive_failed_swaps": 3,
+  "token_funding": [
+    {
+      "symbol": "WETH",
+      "address": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "amount": "5",
+      "amount_type": "usd"
+    },
+    {
+      "symbol": "USDC",
+      "address": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "amount": "5",
+      "amount_type": "usd"
+    }
+  ],
+  "anvil_funding": {
+    "ETH": 25,
+    "WETH": 2,
+    "USDC": 20000
+  },
+  "backtest": {
+    "chain": "arbitrum",
+    "pair": "WETH/USDC",
+    "fee_tier_bps": 500,
+    "timeframe": "5m",
+    "metrics": [
+      "total_return_pct",
+      "max_drawdown_pct",
+      "trade_count",
+      "win_rate",
+      "avg_trade_size_usd",
+      "total_fees_usd",
+      "slippage_bps",
+      "final_balances"
+    ]
+  },
+  "parameter_sweep": {
+    "rsi_period": [7, 14, 21],
+    "rsi_lower_band": [40, 45, 50],
+    "rsi_upper_band": [50, 55, 60],
+    "max_slippage": ["0.001", "0.003", "0.005"]
+  }
+}
