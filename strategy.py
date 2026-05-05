@@ -123,8 +123,11 @@ class ArbTASwapRSIStrategy(IntentStrategy):
             return self._hold("cooldown active")
 
         if self.prev_rsi is None:
+            logger.info("RSI transition prev=None current=%s", rsi_value)
             self._mark_candle_processed(candle_ts, rsi_value)
             return self._hold("initialized rsi history")
+
+        logger.info("RSI transition prev=%s current=%s", self.prev_rsi, rsi_value)
 
         if self.rsi_lower_band <= rsi_value <= self.rsi_upper_band:
             self.regime_state = RegimeState.NEUTRAL
@@ -156,9 +159,9 @@ class ArbTASwapRSIStrategy(IntentStrategy):
         self.last_trade_amount_usd = check_result.amount_usd
 
         logger.info(
-            "RSI=%s prev=%s state=%s target=%s amount=%s %s expected_out=%s impact_bps=%s slippage_bps=%s",
-            rsi_value,
+            "RSI decision prev=%s current=%s state=%s target=%s amount=%s %s expected_out=%s impact_bps=%s slippage_bps=%s",
             self.prev_rsi,
+            rsi_value,
             self.regime_state.value,
             target_state.value,
             check_result.amount,
