@@ -16,7 +16,8 @@ from almanak.framework.data import (
     SlippageEstimateUnavailableError,
 )
 from almanak.framework.intents import Intent
-from almanak.framework.strategies import IntentStrategy, MarketSnapshot, almanak_strategy
+from almanak.framework.strategies import IntentStrategy, almanak_strategy
+from almanak.framework.strategies.intent_strategy import MarketSnapshot
 from almanak.framework.teardown import TeardownMode, TeardownPositionSummary
 
 logger = logging.getLogger(__name__)
