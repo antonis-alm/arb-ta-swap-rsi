@@ -7,7 +7,7 @@ def test_dashboard_module_imports():
     assert callable(render_custom_dashboard)
 
 
-def test_build_dashboard_config_uses_rsi_params():
+def test_build_dashboard_config_uses_rsi_band_params():
     strategy_config = {
         "rsi_period": 21,
         "rsi_lower_band": 42,
@@ -20,6 +20,21 @@ def test_build_dashboard_config_uses_rsi_params():
     assert config.indicator_period == 21
     assert config.lower_threshold == 42
     assert config.upper_threshold == 58
+
+
+def test_build_dashboard_config_falls_back_to_oversold_overbought_params():
+    strategy_config = {
+        "rsi_period": 10,
+        "rsi_oversold": 35,
+        "rsi_overbought": 65,
+    }
+
+    config = _build_dashboard_config(strategy_config)
+
+    assert config.indicator_name == "RSI"
+    assert config.indicator_period == 10
+    assert config.lower_threshold == 35
+    assert config.upper_threshold == 65
 
 
 def test_render_custom_dashboard_calls_ta_template():

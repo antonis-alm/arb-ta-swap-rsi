@@ -5,8 +5,20 @@ from almanak.framework.dashboard.templates import get_rsi_config, render_ta_dash
 
 def _build_dashboard_config(strategy_config: dict[str, Any]) -> Any:
     period = int(strategy_config.get("rsi_period", 14))
-    overbought = float(strategy_config.get("rsi_upper_band", 55))
-    oversold = float(strategy_config.get("rsi_lower_band", 45))
+
+    overbought = float(
+        strategy_config.get(
+            "rsi_upper_band",
+            strategy_config.get("rsi_overbought", 70),
+        )
+    )
+    oversold = float(
+        strategy_config.get(
+            "rsi_lower_band",
+            strategy_config.get("rsi_oversold", 30),
+        )
+    )
+
     return get_rsi_config(period=period, overbought=overbought, oversold=oversold)
 
 
