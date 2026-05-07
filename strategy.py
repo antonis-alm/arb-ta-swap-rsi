@@ -9,6 +9,7 @@ from typing import Any
 
 from almanak.framework.data import (
     BalanceUnavailableError,
+    DataUnavailableError,
     DexQuoteUnavailableError,
     PoolPriceUnavailableError,
     PriceUnavailableError,
@@ -410,12 +411,12 @@ class ArbTASwapRSIStrategy(IntentStrategy):
 
         try:
             candles = market.ohlcv(
-                f"{self.base_token}/{self.quote_token}",
+                self.base_token,
                 timeframe=self.rsi_timeframe,
                 limit=2,
             )
-        except (AttributeError, ValueError) as exc:
-            logger.warning("OHLCV unavailable: %s", exc)
+        except (AttributeError, DataUnavailableError, ValueError) as exc:
+            logger.warning("OHLCV unavailable for %s: %s", self.base_token, exc)
             return fallback_ts
 
         if candles is None or getattr(candles, "empty", True):
